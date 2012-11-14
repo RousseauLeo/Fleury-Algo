@@ -1,16 +1,19 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-struct edge {int u; int v;};
+struct edge_t {int u; int v;};
 
-struct node
+struct node_t
 {
 	int id;
-	int * around; 
+	int * neighbours; 
 	int degree;
 };
 
-typedef struct node* Graph;
+void graph_create_from_list (struct node_t ** gp, int n, int m, struct edge_t * e, int * count);
 
+void graph_destroy(struct node_t ** gp, int n);
+
+void graph_dfs(struct node_t * g, int n, void process(struct node_t *g, int x));
 
 #endif
