@@ -17,7 +17,7 @@ int main (int argc, char **argv)
 {
 	struct node_t * g = 0;
 	
-	/* Definition d'un graphe triangulaire orienté */
+	/* Definition d'un graphe triangulaire */
 	const int n = 3, m = 3;
 	struct edge_t e[3];
 	int count[3];
