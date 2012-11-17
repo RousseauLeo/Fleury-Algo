@@ -3,7 +3,7 @@ objdir=obj
 bindir=bin
 
 CC=gcc
-CFLAGS=-ansi -pedantic
+CFLAGS=-Wall -ansi -pedantic
 LDFLAGS=
 
 BIN=fleury
@@ -18,7 +18,7 @@ prepare:
 $(BIN): $(OBJ)
 	$(CC) -o $(bindir)/$@ $^ $(LDFLAGS) $(CFLAGS)
 
-depend: 
+depend:
 	$(CC) -MM $(SRC) >depend
 
 -include depend
@@ -27,7 +27,7 @@ $(objdir)/%.o: $(srcdir)/%.c
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 .PHONY: install clean cleaninstall mrproper
-	
+
 clean:
 	rm -rf $(objdir)
 
