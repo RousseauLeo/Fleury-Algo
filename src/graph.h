@@ -12,7 +12,12 @@
 /* structure de base pour représenter une arête */
 struct edge_t {int u; int v;};
 
-/* structure de base pour représenter un noeud du graphe */
+/*
+ * Structure de base pour représenter un noeud du graphe.
+ * Contient la liste des index des voisins.
+ * Un index négatif signifie que le noeud n'est pas accessible.
+ */
+
 struct node_t
 {
     int id;
@@ -29,15 +34,25 @@ void graph_create_from_list (struct node_t * g, int n, int m, struct edge_t * e,
 /* Détruit le graphe et libère la mémoire */
 void graph_destroy (struct node_t * g, int n);
 
+void graph_darken_edge(struct node_t * a, struct node_t * b);
+
+void graph_undarken_edge(struct node_t * a, struct node_t * b);
+
 /* Permet de parcourir le graphe en profondeur. La fonction process
  * donnée par l'utilisateur sera appelé pour chaque noeuds
  *
- * Retour: nombre de noeuds atteints
+ * Renvoie le nombre de composantes connexes dans g
  */
 int graph_dfs_func (struct node_t * g, int n, void process(struct node_t *g, int x));
 
+/*
+ * Renvoie le nombre de composantes connexes dans g
+ */
 int graph_dfs_count (struct node_t * g, int n);
 
+/*
+ * Affiche le graphe
+ */
 int graph_dfs_display (struct node_t * g, int n);
 
 #endif

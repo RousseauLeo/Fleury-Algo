@@ -48,12 +48,43 @@ void graph_destroy (struct node_t * g, int n)
     }
 }
 
-/*
- * DFS
- */
-int __dfsRec (struct node_t *g, int x, int *status, void process(struct node_t *g, int x))
+
+void graph_darken_edge(struct node_t * a, struct node_t * b)
 {
-    int i = 0, count = 1;
+    int i = 0;
+
+    for(i = 0; i < a->degree; ++i)
+    {
+        if(a->neighbours[i] == b->id)
+        {
+            a->neighbours[i] = -1;
+            a->neighbours[i] = a->neighbours[a->degree-1];
+            a->degree--;
+        }
+    }
+
+    for(i = 0; i < b->degree; ++i)
+    {
+        if(b->neighbours[i] == a->id)
+        {
+            b->neighbours[i] = -1;
+            b->neighbours[i] = b->neighbours[b->degree-1];
+            b->degree--;
+        }
+    }
+}
+
+void graph_undarken_edge(struct node_t * a, struct node_t * b)
+{
+    a->neighbours[a->degree] = b->id;
+    b->neighbours[b->degree] = a->id;
+    a->degree++;
+    b->degree++;
+}
+
+void __dfsRec (struct node_t *g, int x, int *status, void process(struct node_t *g, int x))
+{
+    int i = 0;
 
     status[x] = 1;
 
@@ -62,11 +93,13 @@ int __dfsRec (struct node_t *g, int x, int *status, void process(struct node_t *
 
     for(i = 0; i < g[x].degree; ++i)
     {
-        if(status[g[x].neighbours[i]] == 0)
-            count += __dfsRec(g, g[x].neighbours[i], status, process);
+        /* Si le noeud est accessible */
+        if(g[x].neighbours[i] > 0)
+        {
+            if(status[g[x].neighbours[i]] == 0)
+                __dfsRec(g, g[x].neighbours[i], status, process);
+        }
     }
-
-    return count;
 }
 
 int graph_dfs_func (struct node_t * g, int n, void process(struct node_t *g, int x))
@@ -77,9 +110,15 @@ int graph_dfs_func (struct node_t * g, int n, void process(struct node_t *g, int
     for(i = 0; i < n; ++i)
         status[i] = 0;
 
-    status[0] = 1;
-
-    count += __dfsRec(g, 0, status, process);
+    for(i = 0; i < n; ++i)
+    {
+        if(status[i] == 0)
+        {
+            count ++;
+            __dfsRec(g, 0, status, process);
+        }
+        status[0] = 2;
+    }
 
     free(status);
 

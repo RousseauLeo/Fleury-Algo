@@ -3,24 +3,108 @@
 
 #include "graph.h"
 
+int pick_next(int current, struct node_t * g, int n, int * cc)
+{
+    int i = 0;
+    int next = -1;
+    int count = 0;
+    int found = 0;
+
+    int tmpCc = 0;
+
+    /* Pour chaque voisins du noeud en cours ... */
+    for(i = 0; i < g[current].degree && !found; ++i)
+    {
+        /*
+         * Si le noeud est accessible (l'arête est claire):
+         * On vérifie que cette arête n'est pas un isthme, c'est à dire
+         * que si on la supprime, on conserve le nombre de composantes
+         * connexes dans le graphe.
+         *
+         * Toutefois, si en supprimant l'arête on ramène le degré du noeud
+         * courent à 0, alors le nombre de composantes connexes dans le graphe
+         * doit augmenter strictement de 1. (tmpCC vaut alors 1)
+         */
+        if(g[current].neighbours[i] >= 0)
+        {
+            next = g[current].neighbours[i];
+
+            graph_darken_edge(&g[current], &g[next]);
+
+            if(g[current].degree == 0)
+                tmpCc = 1;
+
+            count = graph_dfs_count(g, n);
+
+            if(count == *cc + tmpCc)
+            {
+                *cc += tmpCc;
+                found = 1;
+            }
+            else
+            {
+                /* Si l'arête est un isthme alors on ne la supprime pas et on
+                 * passe au noeud suivant */
+                graph_undarken_edge(&g[current], &g[next]);
+                next = -1;
+            }
+        }
+    }
+
+    return next;
+}
+
+int fleury(struct node_t * g, int n, int * out)
+{
+    int traversed = 0;
+    int next = 0;
+    int cc = 1;
+
+    out[traversed] = 0;
+
+    /* Tant qu'on peut visiter un noeud sans passer
+     * par une arête noircie, on continue. */
+    while(next >= 0)
+    {
+        /* Trouver le prochain noeud à visiter et noircir l'arête */
+        next = pick_next(next, g, n, &cc);
+
+        /* Si on a trouver un noeud, alors on l'ajoute à la liste des noeuds
+         * visités. */
+        if(next >= 0)
+            out[++traversed] = next;
+    }
+
+    return traversed;
+}
+
 int main (int argc, char **argv)
 {
     struct node_t * g = 0;
 
     /* Definition d'un graphe triangulaire */
-    const int n = 3, m = 3;
-    struct edge_t e[3];
-    int count[3];
+    const int n = 4, m = 4;
+    struct edge_t e[4];
+    int count[4];
 
-    g = malloc(n * sizeof(struct node_t));
+    /* Solution finale */
+    int out[4];
+    int size = 0;
+
+    /* variables temporaires */
+    int i = 0;
+
+    g = (struct node_t *)malloc(n * sizeof(struct node_t));
 
     e[0].u = 0; e[0].v = 1;
     e[1].u = 1; e[1].v = 2;
-    e[2].u = 2; e[2].v = 0;
+    e[2].u = 2; e[2].v = 3;
+    e[3].u = 3; e[3].v = 0;
 
     count[0] = 2;
     count[1] = 2;
     count[2] = 2;
+    count[3] = 2;
 
     printf("Initialisiation ...\n");
 
@@ -30,9 +114,20 @@ int main (int argc, char **argv)
 
     graph_dfs_display(g, n);
 
-    printf("Comptage ... \n");
+    printf("Nombre de composantes connexes: %d\n", graph_dfs_count(g, n));
 
-    printf("Total: %d\n", graph_dfs_count(g, n));
+    printf("Application de l'algorithme de fleury sur G(%d, %d) ...\n", n, m);
+    size = fleury(g, n, out);
+
+    if(size == m)
+    {
+        printf("Solution trouvée !\n");
+        for(i = 0; i < size; ++i)
+            printf("%d ", out[i]);
+        printf("\n");
+    }
+    else
+        printf("Il n'existe pas de solutions.\n");
 
     printf("Destruction ...\n");
 
