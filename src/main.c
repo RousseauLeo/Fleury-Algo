@@ -82,13 +82,13 @@ int main (int argc, char **argv)
 {
     struct node_t * g = 0;
 
-    /* Definition d'un graphe triangulaire */
-    const int n = 4, m = 4;
-    struct edge_t e[4];
-    int count[4];
+    /* Definition d'un graphe de test*/
+    const int n = 5, m = 10;
+    struct edge_t e[10];
+    int count[5];
 
     /* Solution finale */
-    int out[4];
+    int out[10];
     int size = 0;
 
     /* variables temporaires */
@@ -101,10 +101,20 @@ int main (int argc, char **argv)
     e[2].u = 2; e[2].v = 3;
     e[3].u = 3; e[3].v = 0;
 
-    count[0] = 2;
-    count[1] = 2;
-    count[2] = 2;
-    count[3] = 2;
+    e[4].u = 1; e[4].v = 4;
+    e[5].u = 2; e[5].v = 4;
+
+    e[6].u = 0; e[6].v = 4;
+    e[7].u = 0; e[7].v = 2;
+
+    e[8].u = 3; e[8].v = 1;
+    e[9].u = 3; e[9].v = 4;
+
+    count[0] = 4;
+    count[1] = 4;
+    count[2] = 4;
+    count[3] = 4;
+    count[4] = 4;
 
     printf("Initialisiation ...\n");
 
