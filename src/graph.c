@@ -82,6 +82,7 @@ void graph_undarken_edge(struct node_t * a, struct node_t * b)
     b->degree++;
 }
 
+/* Appel récursif pour le parfours en profondeur */
 void __dfsRec (struct node_t *g, int x, int *status, void process(struct node_t *g, int x))
 {
     int i = 0;
