@@ -8,13 +8,16 @@
  * e all the edges in the graph
  * count number of edges for each node 
  */ 
-void graph_create_from_list (struct node_t * g, int n, int m, struct edge_t * e, int * count)
+int graph_create_from_list (struct node_t * g, int n, int m, struct edge_t * e, int * count)
 {
     int i = 0, j = 0;
     int cID = 0, csID = 0;
 	
     if(n == 0 || g == 0)
-        return;
+    {
+		printf("erreur: le graphe est vide !\n");
+        return -1;
+	}
 
     for(i = 0; i < n; ++i)
     {
@@ -32,21 +35,30 @@ void graph_create_from_list (struct node_t * g, int n, int m, struct edge_t * e,
         cID = e[j].u;
         csID = e[j].v;
         
+        if(cID == csID)
+        {
+			printf("erreur: un sommet ne peut pointer sur lui-même !\n");
+			return -1;
+		}
+        
         g[cID].neighbours[g[cID].degree++] = csID;
     }
+    
+    return 0;
 }
 
 
-void graph_read_from_std (struct node_t ** gp, int * np, int * mp)
+int graph_read_from_std (struct node_t ** gp, int * np, int * mp)
 {
 	int n = 0, m = 0, s = 0, c = 0, i = 0;
 	int count;
 	int * buf;
 	int * ned;
 	
+	int ret = 0;
+	
 	struct edge_t * e = 0;
 	
-	printf("You are about to write your graph in the standard input\n");
 	scanf("%d", &n);
 	
 	buf = malloc(n * sizeof(int));
@@ -75,14 +87,22 @@ void graph_read_from_std (struct node_t ** gp, int * np, int * mp)
 		}
 	}
 	
-	graph_create_from_list(*gp, n, m, e, ned);
+	*np = n;
+	*mp = m / 2;
+	
+	ret = graph_create_from_list(*gp, n, m, e, ned);
+	
+	if(m % 2 != 0)
+	{
+		printf("erreur: le nombre d'arêtes doit être pair !\n");
+		ret = -1;
+	}
 	
 	free(buf);
     free(ned);
 	free(e);
 	
-	*np = n;
-	*mp = m / 2;
+	return ret;
 }
 
 

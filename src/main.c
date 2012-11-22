@@ -81,7 +81,7 @@ int fleury(struct node_t * g, int n, int * out)
 int main (int argc, char **argv)
 {
     struct node_t * g = 0;
-
+	
     /* Definition d'un graphe de test*/
     int n = 0, m = 0;
 
@@ -91,34 +91,40 @@ int main (int argc, char **argv)
 
     /* variables temporaires */
     int i = 0;
+    int ret = 0;
 	
     printf("Initialisiation ...\n");
     
-	graph_read_from_std(&g, &n, &m);
+	ret = graph_read_from_std(&g, &n, &m);
 	
-	printf("G(%d, %d) créé\n", n , m);
-	
-	out = (int *)malloc((m + 1) * sizeof(int));
+	if(ret == 0)
+	{
+		printf("G(%d, %d) créé\n", n , m);
+		
+		out = (int *)malloc((m + 1) * sizeof(int));
 
-    printf("Affichage ...\n");
+		printf("Affichage ...\n");
 
-    graph_dfs_display(g, n);
+		graph_dfs_display(g, n);
 
-    printf("Nombre de composantes connexes: %d\n", graph_dfs_count(g, n));
+		printf("Nombre de composantes connexes: %d\n", graph_dfs_count(g, n));
 
-    printf("Application de l'algorithme de fleury sur G(%d, %d) ...\n", n, m);
-    size = fleury(g, n, out);
+		printf("Application de l'algorithme de fleury sur G(%d, %d) ...\n", n, m);
+		size = fleury(g, n, out);
 
-    if(size == m)
-    {
-        printf("Solution trouvée !\n");
-        for(i = 0; i < size; ++i)
-            printf("%d ", out[i]);
-        printf("\n");
-    }
-    else
-        printf("Il n'existe pas de solutions. \n");
-
+		if(size == m)
+		{
+			printf("Solution trouvée !\n");
+			for(i = 0; i < size; ++i)
+				printf("%d ", out[i]);
+			printf("\n");
+		}
+		else
+			printf("Il n'existe pas de solutions. (les sommets ne sont pas de dégrés pair)\n");
+	}
+	else
+		printf("Une erreur est survenue ...\n");
+		
     printf("Destruction ...\n");
 
     graph_destroy(g, n);

@@ -3,7 +3,7 @@ objdir=obj
 bindir=bin
 
 CC=gcc
-CFLAGS=-Wall -ansi -pedantic
+CFLAGS=-Wall -ansi -pedantic -s -O3
 LDFLAGS=
 
 BIN=fleury
@@ -11,6 +11,9 @@ SRC= $(wildcard $(srcdir)/*.c)
 OBJ= $(SRC:$(srcdir)/%.c=$(objdir)/%.o)
 
 all: depend prepare $(BIN)
+
+generator: prepare
+	$(CC) -o $(bindir)/generator $(srcdir)/gen/generator.c $(LDFLAGS) $(CFLAGS)
 
 prepare:
 	mkdir -p $(objdir) $(bindir)
