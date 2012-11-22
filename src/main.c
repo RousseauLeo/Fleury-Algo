@@ -83,7 +83,7 @@ int main (int argc, char **argv)
     struct node_t * g = 0;
 
     /* Definition d'un graphe de test*/
-    const int n = 5, m = 10;
+    int n = 5, m = 10;
     struct edge_t e[10];
     int count[5];
 
@@ -93,7 +93,7 @@ int main (int argc, char **argv)
 
     /* variables temporaires */
     int i = 0;
-
+	/*
     g = (struct node_t *)malloc(n * sizeof(struct node_t));
 
     e[0].u = 0; e[0].v = 1;
@@ -115,10 +115,10 @@ int main (int argc, char **argv)
     count[2] = 4;
     count[3] = 4;
     count[4] = 4;
-
+	*/
     printf("Initialisiation ...\n");
-
-    graph_create_from_list(g, n, m, e, count);
+	n = graph_read_from_std(g);
+    /*graph_create_from_list(g, n, m, e, count);*/
 
     printf("Affichage ...\n");
 

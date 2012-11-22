@@ -1,8 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
-
 #include "graph.h"
-
+/*
+ * g graph to allocate
+ * n the number of nodes
+ * m the number of edges
+ * e all the edges in the graph
+ * count number of edges for each node 
+ */ 
 void graph_create_from_list (struct node_t * g, int n, int m, struct edge_t * e, int * count)
 {
     int i = 0, j = 0;
@@ -33,6 +38,47 @@ void graph_create_from_list (struct node_t * g, int n, int m, struct edge_t * e,
         count[cID]--; count[csID]--;
     }
 }
+
+
+int graph_read_from_std (struct node_t * g)
+{
+	int n, s, c, i;
+	int m = 0;
+	int count;
+	int * buf;
+	int * ned;
+	struct edge_t * e = 0;
+	printf("You are about to write your graph in the standard input\n");
+	scanf("%i",&n);
+	
+	buf = malloc(2*n*sizeof(int));
+	ned = malloc(n*sizeof(int));
+	e   = malloc(n*n*sizeof(struct node_t));
+	for(c = 0; c < n; c++)
+	{
+		count = -1;
+		scanf("%i" ,&s);
+		do {
+			m++;
+			buf[++count] = s;
+			scanf("%i", &s);
+		} while(s != -1 );
+		ned[c] = count +1 ;
+		printf("m = %d\n", m);
+		for(i = 0; i <= count; i++)
+			e[m+i].u = c; e[m+i].v = buf[i];
+		printf("\n");
+	}
+		printf("\n");
+		
+	graph_create_from_list(g,n,m,e,ned);
+	free(buf);
+	free(ned);
+	free(e);
+	
+	return n;
+}
+
 
 void graph_destroy (struct node_t * g, int n)
 {

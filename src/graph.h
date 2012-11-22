@@ -1,6 +1,7 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#define DBG printf("%s:%d\n",__FILE__,__LINE__);
 /*
  * Le graphe est représenté par une liste de noeuds et le nombre de
  * noeuds présents dans cette liste.
@@ -30,6 +31,8 @@ struct node_t
  * voisins
  */
 void graph_create_from_list (struct node_t * g, int n, int m, struct edge_t * e, int * count);
+
+int graph_read_from_std (struct node_t * g);
 
 /* Détruit le graphe et libère la mémoire */
 void graph_destroy (struct node_t * g, int n);
