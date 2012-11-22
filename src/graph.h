@@ -32,7 +32,7 @@ struct node_t
  */
 void graph_create_from_list (struct node_t * g, int n, int m, struct edge_t * e, int * count);
 
-int graph_read_from_std (struct node_t * g);
+void graph_read_from_std (struct node_t ** gp, int * np, int * mp);
 
 /* Détruit le graphe et libère la mémoire */
 void graph_destroy (struct node_t * g, int n);

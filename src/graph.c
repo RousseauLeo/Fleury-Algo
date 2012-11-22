@@ -12,15 +12,15 @@ void graph_create_from_list (struct node_t * g, int n, int m, struct edge_t * e,
 {
     int i = 0, j = 0;
     int cID = 0, csID = 0;
-
+	
     if(n == 0 || g == 0)
         return;
 
     for(i = 0; i < n; ++i)
     {
         g[i].id = i;
-        g[i].degree = count[i];
-        g[i].neighbours = malloc(g[i].degree * sizeof(int));
+        g[i].degree = 0;
+        g[i].neighbours = (int *)malloc(count[i] * sizeof(int));
     }
 
     /*
@@ -31,52 +31,58 @@ void graph_create_from_list (struct node_t * g, int n, int m, struct edge_t * e,
     {
         cID = e[j].u;
         csID = e[j].v;
-
-        g[cID].neighbours[g[cID].degree - count[cID]] = csID;
-        g[csID].neighbours[g[csID].degree - count[csID]] = cID;
-
-        count[cID]--; count[csID]--;
+        
+        g[cID].neighbours[g[cID].degree++] = csID;
     }
 }
 
 
-int graph_read_from_std (struct node_t * g)
+void graph_read_from_std (struct node_t ** gp, int * np, int * mp)
 {
-	int n, s, c, i;
-	int m = 0;
+	int n = 0, m = 0, s = 0, c = 0, i = 0;
 	int count;
 	int * buf;
 	int * ned;
-	struct edge_t * e = 0;
-	printf("You are about to write your graph in the standard input\n");
-	scanf("%i",&n);
 	
-	buf = malloc(2*n*sizeof(int));
-	ned = malloc(n*sizeof(int));
-	e   = malloc(n*n*sizeof(struct node_t));
+	struct edge_t * e = 0;
+	
+	printf("You are about to write your graph in the standard input\n");
+	scanf("%d", &n);
+	
+	buf = malloc(n * sizeof(int));
+	ned = malloc(n * sizeof(int));
+	e   = malloc(n * n * sizeof(struct edge_t));
+	*gp	= malloc(n * sizeof(struct node_t));
+	
 	for(c = 0; c < n; c++)
 	{
-		count = -1;
-		scanf("%i" ,&s);
+		count = 0;
+		
+		scanf("%d" ,&s);
+		
 		do {
 			m++;
-			buf[++count] = s;
-			scanf("%i", &s);
+			buf[count++] = s;
+			scanf("%d", &s);
 		} while(s != -1 );
-		ned[c] = count +1 ;
-		printf("m = %d\n", m);
-		for(i = 0; i <= count; i++)
-			e[m+i].u = c; e[m+i].v = buf[i];
-		printf("\n");
-	}
-		printf("\n");
 		
-	graph_create_from_list(g,n,m,e,ned);
+		ned[c] = count + 1;
+		
+		for(i = 0; i < count; i++)
+		{
+			e[m - count + i].u = c;
+			e[m - count + i].v = buf[i];
+		}
+	}
+	
+	graph_create_from_list(*gp, n, m, e, ned);
+	
 	free(buf);
-	free(ned);
+    free(ned);
 	free(e);
 	
-	return n;
+	*np = n;
+	*mp = m / 2;
 }
 
 
@@ -189,5 +195,6 @@ void __display_func (struct node_t * g, int x)
 
 int graph_dfs_display (struct node_t * g, int n)
 {
+	printf("N = %d\n", n);
     return graph_dfs_func(g, n,  __display_func);
 }

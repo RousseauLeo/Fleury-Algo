@@ -83,42 +83,22 @@ int main (int argc, char **argv)
     struct node_t * g = 0;
 
     /* Definition d'un graphe de test*/
-    int n = 5, m = 10;
-    struct edge_t e[10];
-    int count[5];
+    int n = 0, m = 0;
 
     /* Solution finale */
-    int out[10];
+    int * out = 0;
     int size = 0;
 
     /* variables temporaires */
     int i = 0;
-	/*
-    g = (struct node_t *)malloc(n * sizeof(struct node_t));
-
-    e[0].u = 0; e[0].v = 1;
-    e[1].u = 1; e[1].v = 2;
-    e[2].u = 2; e[2].v = 3;
-    e[3].u = 3; e[3].v = 0;
-
-    e[4].u = 1; e[4].v = 4;
-    e[5].u = 2; e[5].v = 4;
-
-    e[6].u = 0; e[6].v = 4;
-    e[7].u = 0; e[7].v = 2;
-
-    e[8].u = 3; e[8].v = 1;
-    e[9].u = 3; e[9].v = 4;
-
-    count[0] = 4;
-    count[1] = 4;
-    count[2] = 4;
-    count[3] = 4;
-    count[4] = 4;
-	*/
+	
     printf("Initialisiation ...\n");
-	n = graph_read_from_std(g);
-    /*graph_create_from_list(g, n, m, e, count);*/
+    
+	graph_read_from_std(&g, &n, &m);
+	
+	printf("G(%d, %d) créé\n", n , m);
+	
+	out = (int *)malloc((m + 1) * sizeof(int));
 
     printf("Affichage ...\n");
 
@@ -137,13 +117,15 @@ int main (int argc, char **argv)
         printf("\n");
     }
     else
-        printf("Il n'existe pas de solutions.\n");
+        printf("Il n'existe pas de solutions. \n");
 
     printf("Destruction ...\n");
 
-    graph_destroy(g, 3);
+    graph_destroy(g, n);
 
     free(g);
+    
+    free(out);
 
     printf("Done.\n");
 
