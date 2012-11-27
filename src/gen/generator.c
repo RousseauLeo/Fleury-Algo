@@ -20,7 +20,7 @@ int main(int argc, char ** argv)
 		for(j = 0; j < n; ++j)
 		{
 			if(j != i)
-				printf("%d ", j);
+				printf("%d ", j + 1);
 		}
 		printf("-1\n");
 	}

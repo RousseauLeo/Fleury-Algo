@@ -115,8 +115,10 @@ int main (int argc, char **argv)
 		if(size == m)
 		{
 			printf("Solution trouvée !\n");
+			/* On ajoute 1, c'est un peu bizarre mais le sujet dit que
+			 * c'est numéroté de 1 à n, alors bon ... */
 			for(i = 0; i < size; ++i)
-				printf("%d ", out[i]);
+				printf("%d ", out[i] + 1);
 			printf("\n");
 		}
 		else

@@ -74,7 +74,9 @@ int graph_read_from_std (struct node_t ** gp, int * np, int * mp)
 		
 		do {
 			m++;
-			buf[count++] = s;
+			/* On retire 1, c'est un peu bizarre mais le sujet dit que
+			 * c'est numéroté de 1 à n, alors bon ... */
+			buf[count++] = s - 1;
 			scanf("%d", &s);
 		} while(s != -1 );
 		
