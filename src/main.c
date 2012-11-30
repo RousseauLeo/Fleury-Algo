@@ -93,31 +93,32 @@ int main (int argc, char **argv)
     int i = 0;
     int ret = 0;
 	
-    printf("Initialisiation ...\n");
+    /* printf("Initialisiation ...\n"); */
     
 	ret = graph_read_from_std(&g, &n, &m);
 	
 	if(ret == 0)
 	{
-		printf("G(%d, %d) créé\n", n , m);
+		/* printf("G(%d, %d) créé\n", n , m); */
 		
 		out = (int *)malloc((m + 1) * sizeof(int));
 
-		printf("Affichage ...\n");
+		/* printf("Affichage ...\n"); */
 
-		graph_dfs_display(g, n);
+		/* graph_dfs_display(g, n); */
+		
+		/* printf("Nombre de composantes connexes: %d\n", graph_dfs_count(g, n)); */
 
-		printf("Nombre de composantes connexes: %d\n", graph_dfs_count(g, n));
-
-		printf("Application de l'algorithme de fleury sur G(%d, %d) ...\n", n, m);
+		/* printf("Application de l'algorithme de fleury sur G(%d, %d) ...\n", n, m); */
 		size = fleury(g, n, out);
 
 		if(size == m)
 		{
-			printf("Solution trouvée !\n");
+			/* printf("Solution trouvée !\n"); */
+			
 			/* On ajoute 1, c'est un peu bizarre mais le sujet dit que
 			 * c'est numéroté de 1 à n, alors bon ... */
-			for(i = 0; i < size; ++i)
+			for(i = 0; i <= size; ++i)
 				printf("%d ", out[i] + 1);
 			printf("\n");
 		}
@@ -127,7 +128,7 @@ int main (int argc, char **argv)
 	else
 		printf("Une erreur est survenue ...\n");
 		
-    printf("Destruction ...\n");
+    /* printf("Destruction ...\n"); */
 
     graph_destroy(g, n);
 
@@ -135,7 +136,7 @@ int main (int argc, char **argv)
     
     free(out);
 
-    printf("Done.\n");
+    /* printf("Done.\n"); */
 
     return 0;
 }
