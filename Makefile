@@ -3,7 +3,7 @@ objdir=obj
 bindir=bin
 
 CC=gcc
-CFLAGS=-Wall -ansi -pedantic -O3
+CFLAGS=-Wall -ansi -pedantic -s -O3
 LDFLAGS=
 
 BIN=fleury

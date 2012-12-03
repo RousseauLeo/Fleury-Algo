@@ -127,7 +127,8 @@ int main (int argc, char **argv)
 
 			/* graph_dfs_display(g, n); */
 
-			printf("Application de l'algorithme de fleury sur G(%d, %d) ...\n", n, m);
+			/* printf("Application de l'algorithme de fleury sur G(%d, %d) ...\n", n, m); */
+			
 			size = fleury(g, n, out);
 			
 			if(size == m)

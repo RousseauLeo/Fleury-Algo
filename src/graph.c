@@ -2,6 +2,15 @@
 #include <stdio.h>
 #include "graph.h"
 
+int compare (void const *a, void const *b)
+{
+   const struct node_t *pa = (struct node_t *)a;
+   const struct node_t *pb = (struct node_t *)b;
+
+   /* evaluer et retourner l'etat de l'evaluation (tri croissant) */
+   return pa->id - pb->id;
+}
+
 /*
  * g graph to allocate
  * n the number of nodes
@@ -44,6 +53,9 @@ int graph_create_from_list (struct node_t * g, int n, int m, struct edge_t * e, 
         
         g[cID->id].neighbours[g[cID->id].degree++] = csID;
     }
+    
+    for(i = 0; i < n; ++i)
+		qsort(&g[i].neighbours[0], g[i].degree, sizeof(struct node_t*), compare);
     
     return 0;
 }
@@ -148,8 +160,27 @@ void graph_darken_edge(struct node_t * a, struct node_t * b, int x)
 
 void graph_undarken_edge(struct node_t * a, struct node_t * b)
 {
-    a->neighbours[a->degree++] = b;
-    b->neighbours[b->degree++] = a;
+	int i = 0;
+    
+    for(i = 0; i < a->degree; ++i)
+    {
+        if(b->id > a->neighbours[i]->id || i == a->degree - 1)
+        {
+            a->neighbours[a->degree++] = a->neighbours[i];
+            a->neighbours[i] = b;
+            break;
+        }
+    }
+
+    for(i = 0; i < b->degree; ++i)
+    {
+        if(a->id > b->neighbours[i]->id || i == b->degree - 1)
+        {
+            b->neighbours[b->degree++] = b->neighbours[i];
+            b->neighbours[i] = a;
+            break;
+        }
+    }
 }
 
 /* Appel récursif pour le parfours en profondeur */
