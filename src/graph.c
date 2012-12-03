@@ -1,4 +1,29 @@
+/*
+   -----------------------------------------------------------------------------
+   Copyright (c) 2012 Léo Rousseau and Aurélien Cavelan
+   
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+   
+   The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software.
+   
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+   THE SOFTWARE.
+   -----------------------------------------------------------------------------
+*/
+
 #include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 #include "graph.h"
 
@@ -7,7 +32,7 @@ int compare (void const *a, void const *b)
    const struct node_t *pa = (struct node_t *)a;
    const struct node_t *pb = (struct node_t *)b;
 
-   /* evaluer et retourner l'etat de l'evaluation (tri croissant) */
+   /* Evaluer et retourner l'etat de l'evaluation (tri croissant) */
    return pa->id - pb->id;
 }
 
@@ -54,13 +79,16 @@ int graph_create_from_list (struct node_t * g, int n, int m, struct edge_t * e, 
         g[cID->id].neighbours[g[cID->id].degree++] = csID;
     }
     
+    /* Tri des voisins de chaque sommet du graphe
+     * Cela permet d'augmenter les performances de l'algorithme de 
+     * fleury dans certains cas */
     for(i = 0; i < n; ++i)
 		qsort(&g[i].neighbours[0], g[i].degree, sizeof(struct node_t*), compare);
     
     return 0;
 }
 
-
+/* Créer un graphe à partir des données lues sur l'entré standard */
 int graph_read_from_std (struct node_t ** gp, int * np, int * mp)
 {
 	int n = 0, m = 0, s = 0, c = 0, i = 0;
@@ -120,7 +148,7 @@ int graph_read_from_std (struct node_t ** gp, int * np, int * mp)
 	return ret;
 }
 
-
+/* Libère la mémoire utilisé pour le graphe */
 void graph_destroy (struct node_t * g, int n)
 {
     int i = 0;
@@ -135,6 +163,7 @@ void graph_destroy (struct node_t * g, int n)
     }
 }
 
+/* Noircit une arête ; une arête noircit n'est plus visitable */
 void graph_darken_edge(struct node_t * a, struct node_t * b, int x)
 {
     int i = 0;
@@ -158,6 +187,8 @@ void graph_darken_edge(struct node_t * a, struct node_t * b, int x)
     }
 }
 
+/* Eclair une arête ; une arête éclairée est visitable 
+ * Note: cette fonction maintient les voisins triés */
 void graph_undarken_edge(struct node_t * a, struct node_t * b)
 {
 	int i = 0;
@@ -183,53 +214,33 @@ void graph_undarken_edge(struct node_t * a, struct node_t * b)
     }
 }
 
-/* Appel récursif pour le parfours en profondeur */
-int __dfsRec (struct node_t * n, int * status, int (*process)(struct node_t * n, void * data), void * data)
-{
-    int i = 0, res = 0;
-
-    status[n->id] = 1;
-
-    if(process)
-        res = process(n, data);
-    
-	for(i = 0; i < n->degree && res == 0; ++i)
-	{
-		/* Si le noeud est accessible */
-		if(status[n->neighbours[i]->id] == 0)
-			res = __dfsRec(n->neighbours[i], status, process, data);
-	}
-	
-	return res;
-}
-
-int graph_dfs_func (struct node_t * gorig, int n, int (*process)(struct node_t * n, void * data), void * data)
-{
-    int i = 0, res = 0;
-    int * status = (int *)malloc(n * sizeof(int));
-
-    for(i = 0; i < n; ++i)
-        status[i] = 0;
-        
-	res = __dfsRec(gorig, status, process, data);
-
-    free(status);
-
-    return res;
-}
-
-int __display_func (struct node_t * n, void * data)
+/* Appel récursif pour le parfours en profondeur (Affichage) */
+void __dfsDisplayRec (struct node_t * n, int * status)
 {
     int i = 0;
+
+    status[n->id] = 1;
 
     for(i = 0; i < n->degree; ++i)
         printf("%d -> %d\n", n->id, n->neighbours[i]->id);
     
-    return 0;
+	for(i = 0; i < n->degree; ++i)
+	{
+		/* Si le noeud est accessible */
+		if(status[n->neighbours[i]->id] == 0)
+			__dfsDisplayRec(n->neighbours[i], status);
+	}
 }
 
-int graph_dfs_display (struct node_t * g, int n)
+void graph_dfs_display (struct node_t * gorig, int n)
 {
-	printf("N = %d\n", n);
-    return graph_dfs_func(&g[0], n, __display_func, 0);
+    int * status = (int *)malloc(n * sizeof(int));
+
+	memset(status, 0, n * sizeof(int));
+    
+    printf("N = %d\n", n);
+    
+	__dfsDisplayRec(gorig, status);
+
+    free(status);
 }

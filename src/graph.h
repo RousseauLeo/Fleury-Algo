@@ -1,7 +1,32 @@
+/*
+   -----------------------------------------------------------------------------
+   Copyright (c) 2012 Léo Rousseau and Aurélien Cavelan
+   
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+   
+   The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software.
+   
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+   THE SOFTWARE.
+   -----------------------------------------------------------------------------
+*/
+
 #ifndef GRAPH_H
 #define GRAPH_H
 
 #define DBG printf("%s:%d\n",__FILE__,__LINE__);
+
 /*
  * Le graphe est représenté par une liste de noeuds et le nombre de
  * noeuds présents dans cette liste.
@@ -42,22 +67,10 @@ void graph_destroy (struct node_t * g, int n);
 /* Noircir une arête (la rendre inutilisable) */
 void graph_darken_edge(struct node_t * a, struct node_t * b, int x);
 
-/* Eclaircir une arête (la rendre inutilisable) */
+/* Eclaircit une arête (la rendre inutilisable) */
 void graph_undarken_edge(struct node_t * a, struct node_t * b);
 
-/* 
- * Permet de parcourir le graphe en profondeur. La fonction process
- * donnée par l'utilisateur sera appelé pour chaque noeuds
- * 
- * S'arrête si process renvoie une valeur différent de 0
- * 
- * Renvoie 0 ou la valeur de process
- */
-int graph_dfs_func (struct node_t * gorig, int n, int (*process)(struct node_t * n, void * data), void * data);
-
-/*
- * Affiche le graphe
- */
-int graph_dfs_display (struct node_t * g, int n);
+/* Affiche le graphe */
+void graph_dfs_display (struct node_t * g, int n);
 
 #endif
