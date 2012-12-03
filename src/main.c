@@ -3,12 +3,42 @@
 
 #include "graph.h"
 
-int is_not_isthme(struct node_t * n, void * data)
+int is_not_isthme_bfs (struct node_t * gorig, int n, int src)
 {
-	if( (*(int *)data) == n->id)
-		return 1;
+    int i = 0;
+    int * status = (int *)malloc(n * sizeof(int));
+    
+	int qsize = 0;
+    struct node_t ** queue  = (struct node_t **)malloc(n * sizeof(struct node_t *));
+	struct node_t * t = 0;
 	
-	return 0;
+    for(i = 0; i < n; ++i)
+        status[i] = 0;
+    
+    queue[qsize++] = gorig;
+    status[gorig->id] = 1;
+    
+	while(qsize > 0)
+	{
+		t = queue[--qsize];
+		
+		if(t->id == src)
+			return 1;
+		
+		for(i = 0; i < t->degree; ++i)
+		{
+			if(status[t->neighbours[i]->id] == 0)
+			{
+				status[t->neighbours[i]->id] = 1;
+				queue[qsize++] = t->neighbours[i];
+			}
+		}
+	}
+
+	free(queue);
+    free(status);
+
+    return 0;
 }
 
 int pick_next(const int current, struct node_t * g, int n)
@@ -21,7 +51,7 @@ int pick_next(const int current, struct node_t * g, int n)
 		next = g[current].neighbours[0]->id;
 		
 		/* Visiter l'arête */
-		graph_darken_edge(&g[current], g[current].neighbours[0]);
+		graph_darken_edge(&g[current], g[current].neighbours[0], 0);
 	}
 	else
 	{
@@ -30,9 +60,9 @@ int pick_next(const int current, struct node_t * g, int n)
 		{
 			next = g[current].neighbours[i]->id;
 			
-			graph_darken_edge(&g[current], g[current].neighbours[i]);
+			graph_darken_edge(&g[current], g[current].neighbours[i], i);
 			
-			if(graph_dfs_func(&g[next], n, is_not_isthme, (void *)&g[current].id) == 1)
+			if(is_not_isthme_bfs(&g[next], n, g[current].id))
 				break;
 		
 			graph_undarken_edge(&g[current], &g[next]);
@@ -97,7 +127,7 @@ int main (int argc, char **argv)
 
 			/* graph_dfs_display(g, n); */
 
-			/* printf("Application de l'algorithme de fleury sur G(%d, %d) ...\n", n, m); */
+			printf("Application de l'algorithme de fleury sur G(%d, %d) ...\n", n, m);
 			size = fleury(g, n, out);
 			
 			if(size == m)

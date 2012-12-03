@@ -62,9 +62,9 @@ int graph_read_from_std (struct node_t ** gp, int * np, int * mp)
 	
 	scanf("%d", &n);
 	
-	buf = malloc(n * sizeof(int));
-	ned = malloc(n * sizeof(int));
-	e   = malloc(n * n * sizeof(struct edge_t));
+	buf = (int *)malloc(n * sizeof(int));
+	ned = (int *)malloc(n * sizeof(int));
+	e   = (struct edge_t *)malloc(n * n * sizeof(struct edge_t));
 	*gp	= (struct node_t *)malloc(n * sizeof(struct node_t));
 	
 	for(c = 0; c < n; c++)
@@ -123,10 +123,10 @@ void graph_destroy (struct node_t * g, int n)
     }
 }
 
-void graph_darken_edge(struct node_t * a, struct node_t * b)
+void graph_darken_edge(struct node_t * a, struct node_t * b, int x)
 {
     int i = 0;
-
+    
     for(i = 0; i < a->degree; ++i)
     {
         if(a->neighbours[i]->id == b->id)
@@ -153,7 +153,7 @@ void graph_undarken_edge(struct node_t * a, struct node_t * b)
 }
 
 /* Appel récursif pour le parfours en profondeur */
-int __dfsRec (struct node_t * n, int * status, int process(struct node_t * n, void * data), void * data)
+int __dfsRec (struct node_t * n, int * status, int (*process)(struct node_t * n, void * data), void * data)
 {
     int i = 0, res = 0;
 
@@ -172,7 +172,7 @@ int __dfsRec (struct node_t * n, int * status, int process(struct node_t * n, vo
 	return res;
 }
 
-int graph_dfs_func (struct node_t * gorig, int n, int process(struct node_t * n, void * data), void * data)
+int graph_dfs_func (struct node_t * gorig, int n, int (*process)(struct node_t * n, void * data), void * data)
 {
     int i = 0, res = 0;
     int * status = (int *)malloc(n * sizeof(int));

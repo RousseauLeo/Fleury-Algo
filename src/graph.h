@@ -40,7 +40,7 @@ int graph_read_from_std (struct node_t ** gp, int * np, int * mp);
 void graph_destroy (struct node_t * g, int n);
 
 /* Noircir une arête (la rendre inutilisable) */
-void graph_darken_edge(struct node_t * a, struct node_t * b);
+void graph_darken_edge(struct node_t * a, struct node_t * b, int x);
 
 /* Eclaircir une arête (la rendre inutilisable) */
 void graph_undarken_edge(struct node_t * a, struct node_t * b);
@@ -53,7 +53,7 @@ void graph_undarken_edge(struct node_t * a, struct node_t * b);
  * 
  * Renvoie 0 ou la valeur de process
  */
-int graph_dfs_func (struct node_t * gorig, int n, int process(struct node_t * n, void * data), void * data);
+int graph_dfs_func (struct node_t * gorig, int n, int (*process)(struct node_t * n, void * data), void * data);
 
 /*
  * Affiche le graphe
