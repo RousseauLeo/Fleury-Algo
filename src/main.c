@@ -3,53 +3,42 @@
 
 #include "graph.h"
 
-int pick_next(int current, struct node_t * g, int n, int * cc)
+int is_not_isthme(struct node_t * n, void * data)
+{
+	if( (*(int *)data) == n->id)
+		return 1;
+	
+	return 0;
+}
+
+int pick_next(const int current, struct node_t * g, int n)
 {
     int i = 0;
     int next = -1;
-    int count = 0;
-    int found = 0;
-
-    int tmpCc = 0;
-
-    /* Pour chaque voisins du noeud en cours ... */
-    for(i = 0; i < g[current].degree && !found; ++i)
-    {
-        /*
-         * Si le noeud est accessible (l'arête est claire):
-         * On vérifie que cette arête n'est pas un isthme, c'est à dire
-         * que si on la supprime, on conserve le nombre de composantes
-         * connexes dans le graphe.
-         *
-         * Toutefois, si en supprimant l'arête on ramène le degré du noeud
-         * courent à 0, alors le nombre de composantes connexes dans le graphe
-         * doit augmenter strictement de 1. (tmpCC vaut alors 1)
-         */
-        if(g[current].neighbours[i] >= 0)
-        {
-            next = g[current].neighbours[i];
-
-            graph_darken_edge(&g[current], &g[next]);
-
-            if(g[current].degree == 0)
-                tmpCc = 1;
-
-            count = graph_dfs_count(g, n);
-
-            if(count == *cc + tmpCc)
-            {
-                *cc += tmpCc;
-                found = 1;
-            }
-            else
-            {
-                /* Si l'arête est un isthme alors on ne la supprime pas et on
-                 * passe au noeud suivant */
-                graph_undarken_edge(&g[current], &g[next]);
-                next = -1;
-            }
-        }
-    }
+    
+	if(g[current].degree == 1)
+	{
+		next = g[current].neighbours[0]->id;
+		
+		/* Visiter l'arête */
+		graph_darken_edge(&g[current], g[current].neighbours[0]);
+	}
+	else
+	{
+		/* Pour chaque voisins du noeud en cours ... */
+		for(i = 0; i < g[current].degree; ++i)
+		{
+			next = g[current].neighbours[i]->id;
+			
+			graph_darken_edge(&g[current], g[current].neighbours[i]);
+			
+			if(graph_dfs_func(&g[next], n, is_not_isthme, (void *)&g[current].id) == 1)
+				break;
+		
+			graph_undarken_edge(&g[current], &g[next]);
+			next = -1;
+		}
+	}
 
     return next;
 }
@@ -58,7 +47,6 @@ int fleury(struct node_t * g, int n, int * out)
 {
     int traversed = 0;
     int next = 0;
-    int cc = 1;
 
     out[traversed] = 0;
 
@@ -67,7 +55,7 @@ int fleury(struct node_t * g, int n, int * out)
     while(next >= 0)
     {
         /* Trouver le prochain noeud à visiter et noircir l'arête */
-        next = pick_next(next, g, n, &cc);
+        next = pick_next(next, g, n);
 
         /* Si on a trouver un noeud, alors on l'ajoute à la liste des noeuds
          * visités. */
@@ -99,31 +87,34 @@ int main (int argc, char **argv)
 	
 	if(ret == 0)
 	{
-		/* printf("G(%d, %d) créé\n", n , m); */
-		
-		out = (int *)malloc((m + 1) * sizeof(int));
-
-		/* printf("Affichage ...\n"); */
-
-		/* graph_dfs_display(g, n); */
-		
-		/* printf("Nombre de composantes connexes: %d\n", graph_dfs_count(g, n)); */
-
-		/* printf("Application de l'algorithme de fleury sur G(%d, %d) ...\n", n, m); */
-		size = fleury(g, n, out);
-
-		if(size == m)
+		if(n >= 3)
 		{
-			/* printf("Solution trouvée !\n"); */
+			/* printf("G(%d, %d) créé\n", n , m); */
 			
-			/* On ajoute 1, c'est un peu bizarre mais le sujet dit que
-			 * c'est numéroté de 1 à n, alors bon ... */
-			for(i = 0; i <= size; ++i)
-				printf("%d ", out[i] + 1);
-			printf("\n");
+			out = (int *)malloc((m + 1) * sizeof(int));
+
+			/* printf("Affichage ...\n"); */
+
+			/* graph_dfs_display(g, n); */
+
+			/* printf("Application de l'algorithme de fleury sur G(%d, %d) ...\n", n, m); */
+			size = fleury(g, n, out);
+			
+			if(size == m)
+			{
+				/* printf("Solution trouvée !\n"); */
+				
+				/* On ajoute 1, c'est un peu bizarre mais le sujet dit que
+				 * c'est numéroté de 1 à n, alors bon ... */
+				for(i = 0; i <= size; ++i)
+					printf("%d ", out[i] + 1);
+				printf("\n");
+			}
+			else
+				printf("Il n'existe pas de solutions : tous les sommets ne sont pas de dégrés pair.\n");
 		}
 		else
-			printf("Il n'existe pas de solutions. (les sommets ne sont pas de dégrés pair)\n");
+			printf("Il n'existe pas de solutions : moins de 3 sommets\n");
 	}
 	else
 		printf("Une erreur est survenue ...\n");
