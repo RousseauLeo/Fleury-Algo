@@ -3,39 +3,43 @@
 
 #include "graph.h"
 
-int is_not_isthme_bfs (struct node_t * gorig, int n, int src)
+int is_not_isthme_dfs (struct node_t * gorig, int n, int src)
 {
     int i = 0;
     int * status = (int *)malloc(n * sizeof(int));
     
-	int qsize = 0;
-    struct node_t ** queue  = (struct node_t **)malloc(n * sizeof(struct node_t *));
+	int tsize = 0;
+    struct node_t ** stack  = (struct node_t **)malloc(n * sizeof(struct node_t *));
 	struct node_t * t = 0;
 	
     for(i = 0; i < n; ++i)
         status[i] = 0;
     
-    queue[qsize++] = gorig;
+    stack[tsize++] = gorig;
     status[gorig->id] = 1;
     
-	while(qsize > 0)
+	while(tsize > 0)
 	{
-		t = queue[--qsize];
+		t = stack[--tsize];
 		
 		if(t->id == src)
+		{
+			free(stack);
+			free(status);
 			return 1;
+		}
 		
-		for(i = 0; i < t->degree; ++i)
+		for(i = t->degree-1; i >= 0; --i)
 		{
 			if(status[t->neighbours[i]->id] == 0)
 			{
 				status[t->neighbours[i]->id] = 1;
-				queue[qsize++] = t->neighbours[i];
+				stack[tsize++] = t->neighbours[i];
 			}
 		}
 	}
 
-	free(queue);
+	free(stack);
     free(status);
 
     return 0;
@@ -62,7 +66,7 @@ int pick_next(const int current, struct node_t * g, int n)
 			
 			graph_darken_edge(&g[current], g[current].neighbours[i], i);
 			
-			if(is_not_isthme_bfs(&g[next], n, g[current].id))
+			if(is_not_isthme_dfs(&g[next], n, g[current].id))
 				break;
 		
 			graph_undarken_edge(&g[current], &g[next]);
