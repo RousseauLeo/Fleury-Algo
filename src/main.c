@@ -186,7 +186,7 @@ int main (int argc, char **argv)
 			
 			size = fleury(g, n, out);
 			
-			if(size == m)
+			if(size == m && out[size] == out[0])
 			{
 				/* printf("Solution trouvée !\n"); */
 				

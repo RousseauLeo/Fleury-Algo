@@ -102,6 +102,12 @@ int graph_read_from_std (struct node_t ** gp, int * np, int * mp)
 	
 	trash = scanf("%d", &n);
 	
+	if(trash < 0)
+	{
+		printf("error: impossible de lire l'entré standard ...\n");
+		return -1;
+	}
+	
 	buf = (int *)malloc(n * sizeof(int));
 	ned = (int *)malloc(n * sizeof(int));
 	e   = (struct edge_t *)malloc(n * n * sizeof(struct edge_t));
