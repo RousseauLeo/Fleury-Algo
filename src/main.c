@@ -160,7 +160,12 @@ int main (int argc, char **argv)
     /* variables temporaires */
     int i = 0;
     int ret = 0;
-	
+	int output = 1;
+
+	if(argc == 2)
+	{
+		output = 0;
+	}
     /* printf("Initialisiation ...\n"); */
     
 	ret = graph_read_from_std(&g, &n, &m);
@@ -187,9 +192,12 @@ int main (int argc, char **argv)
 				
 				/* On ajoute 1, c'est un peu bizarre mais le sujet dit que
 				 * c'est numéroté de 1 à n, alors bon ... */
-				for(i = 0; i <= size; ++i)
-					printf("%d ", out[i] + 1);
-				printf("\n");
+				if(output)
+				{
+					for(i = 0; i <= size; ++i)
+						printf("%d ", out[i] + 1);
+					printf("\n");
+				}
 			}
 			else
 				printf("Il n'existe pas de solutions : tous les sommets ne sont pas de dégrés pair.\n");

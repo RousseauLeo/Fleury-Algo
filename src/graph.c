@@ -95,12 +95,12 @@ int graph_read_from_std (struct node_t ** gp, int * np, int * mp)
 	int count;
 	int * buf;
 	int * ned;
-	
+	int trash;
 	int ret = 0;
 	
 	struct edge_t * e = 0;
 	
-	scanf("%d", &n);
+	trash = scanf("%d", &n);
 	
 	buf = (int *)malloc(n * sizeof(int));
 	ned = (int *)malloc(n * sizeof(int));
@@ -111,14 +111,14 @@ int graph_read_from_std (struct node_t ** gp, int * np, int * mp)
 	{
 		count = 0;
 		
-		scanf("%d" ,&s);
+		trash = scanf("%d" ,&s);
 		
 		do {
 			m++;
 			/* On retire 1, c'est un peu bizarre mais le sujet dit que
 			 * c'est numéroté de 1 à n, alors bon ... */
 			buf[count++] = s - 1;
-			scanf("%d", &s);
+			trash = scanf("%d", &s);
 		} while(s != -1 );
 		
 		ned[c] = count + 1;
