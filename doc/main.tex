@@ -122,7 +122,7 @@ Master 1 Informatique, \\ Aurélien Cavelan \\ Léo Rousseau
   ./bin/fleury
   \end{lstlisting}
 
-  Ensuite il sera demandé la saisie du graphe à tester selon le format fixé. Après calcul sera affiché l'ordre de parcours des nœuds du graphe dans le cycle s'il y en a un.
+  Le graphe à tester devra être passé au programme sur l'entré standard selon le format fixé. Après calcul sera affiché l'ordre de parcours des nœuds du graphe dans le cycle s'il existe.
 
   \section{Utiliser le Générateur}
   Le Projet contient également un générateur de graphes complets. Pour l'utiliser, il faut le compiler : 
@@ -146,7 +146,7 @@ Master 1 Informatique, \\ Aurélien Cavelan \\ Léo Rousseau
 \chapter{Algorithme et Implémentation}
   \section{Implémentation}
     \subsection{Structure de données}
-    Le projet s'appuye sur une structure de nœud deffinie de cette façon : 
+    Le projet s'appuie sur une structure de nœud deffinie de cette façon : 
     \begin{lstlisting}
 struct node_t
 {
@@ -156,12 +156,12 @@ struct node_t
 };
     \end{lstlisting} 
     Un graphe est un tableau dynamique de nœuds. Chaque nœud contient un identifiant \textbf{id}, un ensemble de voisins \textbf{neighbours} et le nombre de voisin qu'il possède : \textbf{degree}.\\ \\
-    \indent Nous utilisons aussi une représentation des arrêtes par couple d'entiers où chaque entier est l'identifiant d'un des nœuds.
+    \indent Nous utilisons aussi une représentation des arêtes par couple d'entiers où chaque entier est l'identifiant d'un des nœuds.
     \begin{lstlisting}
 struct edge_t {int u; int v;};
     \end{lstlisting}
-    Cette structure est utilisée pour lors de la lecture sur l'entrée standard et la création d'un graphe. \\ \\
-    \indent Nous avons aussi défini un ensemble de fonctions permettant d'utiliser un graphe comme un objet. Ces fonctions permettent nottement la lecture, la création, la suppréssion et le parcour d'un graphe. Les fonctions \textbf{graph\_darken\_edge} et \textbf{graph\_undarken\_edge} servent respectivement à marquer et démarquer une arrête lors d'un parcours.
+    Cette structure est utilisée lors de la lecture sur l'entrée standard et la création d'un graphe. \\ \\
+    \indent Nous avons aussi défini un ensemble de fonctions permettant d'utiliser un graphe comme un objet. Ces fonctions permettent nottamment la lecture, la création, la suppression et le parcour d'un graphe. Les fonctions \textbf{graph\_darken\_edge} et \textbf{graph\_undarken\_edge} servent respectivement à marquer et démarquer une arrête lors d'un parcours. Une arête marquée n'est plus visitable.
 
     \begin{lstlisting}
 int graph_create_from_list (struct node_t * g, int n, int m, struct edge_t * e, int * count);
@@ -175,11 +175,11 @@ void graph_dfs_display (struct node_t * g, int n);
     \subsection{Implémentation de l'algorithme}
 L'algorithme est implémenté via la fonction \textbf{fleury} dans le fichier \textbf{main.c}. Une fois que le graphe à été lu et initialisé, cette fonction va y rechercher un cycle eulerien et, s'il existe, il sera affiché (ordre de parcours des nœuds).
  \\ \\ 
- \indent La fonction \textbf{fleury} s'appuye sur la fonction \textbf{pick\_next}. Elle sert à trouver l'identifiant du prochain nœud à visiter étant donné un nœud de départ. Pour se faire, elle effectue un parcours en profondeur \textbf{is\_not\_isthme\_dfs}. Ce test sert à vérifier qu'il existe un autre chemin entre un nœud source et un nœud destination que l'arrête qui les relie dirrectement. Si ce test et valise, alors cela signifie que l'arrête n'est pas un isthme et peut donc être assombrie. Le prochain nœud à visiter est trouvé. Sinon il faut tester pour un autre nœud voisin.
+ \indent La fonction \textbf{fleury} s'appuie sur la fonction \textbf{pick\_next}. Elle sert à trouver l'identifiant du prochain nœud à visiter étant donné un nœud de départ. Pour se faire, elle effectue un parcours en profondeur \textbf{is\_not\_isthme\_dfs}. Ce test sert à vérifier qu'il existe un autre chemin entre un nœud source et un nœud destination que l'arrête qui les relie directement. Si ce test est valide, alors cela signifie que l'arrête n'est pas un isthme et peut donc être visitée (noircie). Un nouveau noeud est ajouté à la solution, sinon il faut tester les autres voisins.
 
   \section{Étude de Complexité}
-Notre implémentation de l'algorithme cherche $m$ arêtes. À chaque fois elle peut parcourir jusqu'à $n$ voisins et pour savoir si un voisin est bon elle effectue un parcours en profondeur $n + m$ ; 
-soit: $m * n * (m + n)$. Après développement on obient : $m^2*n+n^2*m$ or, $m>n$ donc la complexité de notre implémentation est $O(m^2*n)$. On peut observer sur la courbe ci dessous la croissance du temps d'exécution de l'algorithme (en secondes) en fonction du nombre de nœud dans un graphe (complet). On en déduit qu'il s'agit bien d'une croissance quadratique.
+Notre implémentation de l'algorithme cherche $m$ arêtes. À chaque fois elle peut parcourir jusqu'à $n$ voisins et pour savoir si un voisin est bon elle effectue un parcours en profondeur en O($n + m$) ; 
+soit: $m * n * (m + n)$. Après développement on obient : $m^2*n+n^2*m$ or, $m>n$ donc la complexité de notre implémentation est $O(m^2*n)$. On peut observer sur la courbe ci dessous la croissance du temps d'exécution de l'algorithme (en secondes) en fonction du nombre de nœuds dans un graphe (complet). On en déduit qu'il s'agit bien d'une croissance quadratique.
 
 \includegraphics[scale=0.7]{img/fleury2.pdf} 
 \end{document}
